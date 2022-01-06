@@ -10,89 +10,22 @@ use std::io::{Write, stdout, stdin};
 
 use termion::screen::*;
 
-#[derive(Clone)]
-struct Location {
-    x: usize,
-    y: usize
-}
+fn generate_map(map_s: String) -> Vec<Vec<u64>> {
+    let map: Vec<Vec<u64>> = Vec::new();
 
-#[derive(Clone)]
-struct Player {
-    location: Location,
-    direction: f32
-}
-
-impl Player {
-    pub fn new() -> Player {
-        Player {
-            location: Location { x:0, y:0 },
-            direction: 0.0
-        }
-    }
-}
-
-#[derive(Clone)]
-enum TileType {
-    Empty,
-    Player(Player),
-    Wall
-}
-
-struct Map {
-    field: Vec<Vec<TileType>>,
-    max_x: usize,
-    max_y: usize,
-}
-
-impl Map {
-    pub fn generate_map(map_s: String) -> Map {
-        let mut max_x: usize = 0;
-        let mut max_y: usize = 0;
-        let mut x: usize = 0;
-        for ch in map_s.bytes() {
-            if ch == 10 {
-                if max_x < x { max_x = x }
-                x = 0;
-                max_y += 1;
-            } else {
-                x += 1;
-            }
-        }
-        drop(x);
-
-        
-        let mut field: Vec<Vec<TileType>> = vec![vec![TileType::Empty; max_y]; max_x];
-
-
-        let mut x: usize = 0;
-        let mut y: usize = 0;
-        for ch in map_s.bytes() {
-            println!("Char: {} X: {} Y: {}", ch as char, x, y);
-            match ch {
-                35 => field[x][y] = TileType::Wall,
-                88 => field[x][y] = TileType::Player(Player::new()),
-                32 => field[x][y] = TileType::Empty,
-                10 => {
-                    x = 0;
-                    y += 1;
-                    continue;
-                },
-                _ => {
-                    eprintln!("ERROR: unknown char in map at: {}:{}", x, y);
-                    std::process::exit(1);
-                }
-            }
+    let mut max_x: u64 = 0;
+    let mut max_y: u64 = 0;
+    let mut x: u64 = 0;
+    for ch in map_s.bytes() {
+        if ch == 10 {
+            x = 0;
+            max_y += 1;
+        } else {
             x += 1;
         }
-
-
-            
-        Map {
-            field,
-            max_x,
-            max_y
-        }
     }
+
+    map
 }
 
 fn main() {
@@ -123,7 +56,7 @@ fn main() {
     }
 
 
-    let map = Map::generate_map(map_s);
+    let map = generate_map(map_s);
 
 
 
